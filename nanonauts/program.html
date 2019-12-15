@@ -13,10 +13,14 @@
             var NANONAUT_WIDTH = 166;
             var NANONAUT_HEIGHT = 231;
             var GROUND_Y = 540;
-            var NANONAUT_Y_ACCELLERATION = 0.10;
+            var NANONAUT_Y_ACCELLERATION = 0.50;
+            var NANONAUT_JUMP_SPEED = 20;
+            var SPACE_KEYCODE = 32;
 
             //SETUP
             var nanonautYSpeed = 0;
+            var spaceKeyIsPressed = false;
+            var nanonautIsInTheAir = false;
             var canvas = document.createElement('canvas');
             var c = canvas.getContext('2d');
             canvas.width = CANVAS_WIDTH;
@@ -31,6 +35,8 @@
             var nanonautX = 50;
             var nanonautY = 40;
 
+            window.addEventListener('keydown',onKeyDown);
+            window.addEventListener('keyup',onKeyUp);
             window.addEventListener('load', start);
 
             function start() {
@@ -45,15 +51,32 @@
             }
 
             // PLAYER INPUT
+            function onKeyDown(event) {
+                if(event.keyCode === 32) {
+                    spaceKeyIsPressed = true;
+                }
+                console.log(event.keyCode);
+            }
 
+            function onKeyUp(event) {
+                if(event.keyCode === SPACE_KEYCODE) {
+                    spaceKeyIsPressed = false;
+                }
+            }
 
             // UPDATING
             function update() {
+                if (spaceKeyIsPressed && !nanonautIsInTheAir) {
+                    nanonautYSpeed = -NANONAUT_JUMP_SPEED;
+                    nanonautIsInTheAir = true;
+                }
                 //Update Nanonaut
                 nanonautY = nanonautY + nanonautYSpeed;
                 nanonautYSpeed = nanonautYSpeed + NANONAUT_Y_ACCELLERATION;
                 if (nanonautY > (GROUND_Y - NANONAUT_HEIGHT)) {
                     nanonautY = GROUND_Y - NANONAUT_HEIGHT;
+                    nanonautYSpeed = 0;
+                    nanonautIsInTheAir = false;
                 }
             }
 
